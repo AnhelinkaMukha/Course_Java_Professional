@@ -102,6 +102,16 @@ subprojects {
             html.required.set(true)
         }
     }
+    plugins.apply(JavaPlugin::class.java)
+    plugins.withId("java") {
+        dependencies {
+            add("compileOnly", "org.projectlombok:lombok:1.18.34")
+            add("annotationProcessor", "org.projectlombok:lombok:1.18.34")
+
+            add("testCompileOnly", "org.projectlombok:lombok:1.18.34")
+            add("testAnnotationProcessor", "org.projectlombok:lombok:1.18.34")
+        }
+    }
 }
 
 tasks {
