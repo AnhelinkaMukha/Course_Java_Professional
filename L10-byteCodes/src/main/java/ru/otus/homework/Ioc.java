@@ -13,8 +13,8 @@ class Ioc {
 
     private Ioc() {}
 
-    static TestLoggingInterface createTestLogging(TestLogging testLogging) {
-        InvocationHandler handler = new DemoInvocationHandler(testLogging);
+    static TestLoggingInterface createTestLogging(TestLoggingInterface testLoggingInterface) {
+        InvocationHandler handler = new DemoInvocationHandler(testLoggingInterface);
         return (TestLoggingInterface) Proxy.newProxyInstance(
                 Ioc.class.getClassLoader(), new Class<?>[] {TestLoggingInterface.class}, handler);
     }
