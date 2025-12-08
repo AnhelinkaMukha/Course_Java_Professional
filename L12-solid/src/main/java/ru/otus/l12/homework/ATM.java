@@ -6,25 +6,24 @@ import ru.otus.l12.homework.service.BanknoteCombinationFinderService;
 
 import java.util.*;
 
-public class ATM {
-    private final EnumMap<BanknoteAmount, Integer> allBanknotes =
-            new EnumMap<>(BanknoteAmount.class);
+public class ATM implements ATMMachine{
 
-    private final BanknoteCombinationFinderService combinationFinder = new BanknoteCombinationFinderService();
+    private final BanknoteCombinationFinderService combinationFinder;
 
-    public ATM(){
-        for (BanknoteAmount d : BanknoteAmount.values()) {
-            allBanknotes.put(d, 0);
-        }
+    private final BanknoteStorage storage;
+
+    public ATM(BanknoteCombinationFinderService combinationFinder, BanknoteStorage storage) {
+        this.combinationFinder = combinationFinder;
+        this.storage = storage;
     }
 
     public void acceptBanknotes(List<Banknote> banknotes) {
         for(Banknote banknote: banknotes){
-            allBanknotes.merge(banknote.getBanknoteAmount(), 1, Integer::sum);
+            storage.add(banknote.getBanknoteAmount());
         }
     }
 
-    public int giveMeMoney(int amount) {
+    public int giveMoney(int amount) {
         int totalAtmAmount = howMuchMoneyLeft();
         if (amount > totalAtmAmount) {
             throw new NotEnoughMoneyException(
@@ -33,7 +32,7 @@ public class ATM {
         }
 
         EnumMap<BanknoteAmount, Integer> dispensed =
-                combinationFinder.findSmallestFirstCombination(allBanknotes, amount);
+                combinationFinder.findSmallestFirstCombination(storage.getBanknotes(), amount);
 
         if (dispensed == null) {
             throw new NoBanknotesForGivenAmount(
@@ -45,7 +44,7 @@ public class ATM {
         for (var e : dispensed.entrySet()) {
             BanknoteAmount denom = e.getKey();
             int used = e.getValue();
-            allBanknotes.merge(denom, -used, Integer::sum);
+            storage.getBanknotes().merge(denom, -used, Integer::sum);
         }
 
         return amount;
@@ -53,7 +52,7 @@ public class ATM {
 
     public int howMuchMoneyLeft() {
         int totalSum = 0;
-        for (Map.Entry<BanknoteAmount,Integer> b : allBanknotes.entrySet()) {
+        for (Map.Entry<BanknoteAmount,Integer> b : storage.getBanknotes().entrySet()) {
             totalSum += b.getKey().getValue() * b.getValue();
         }
         return totalSum;
