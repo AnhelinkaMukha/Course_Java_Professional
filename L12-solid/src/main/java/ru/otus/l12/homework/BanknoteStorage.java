@@ -4,8 +4,7 @@ import java.util.EnumMap;
 
 public class BanknoteStorage {
 
-    private final EnumMap<BanknoteAmount, Integer> banknotes =
-            new EnumMap<>(BanknoteAmount.class);
+    private final EnumMap<BanknoteAmount, Integer> banknotes = new EnumMap<>(BanknoteAmount.class);
 
     public void add(BanknoteAmount amount) {
         banknotes.merge(amount, 1, Integer::sum);

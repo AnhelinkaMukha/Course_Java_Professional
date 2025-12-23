@@ -1,17 +1,14 @@
 package ru.otus.l12.homework.service;
 
-import ru.otus.l12.homework.BanknoteAmount;
-
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.Map;
+import ru.otus.l12.homework.BanknoteAmount;
 
 public class BanknoteCombinationFinderService {
     public EnumMap<BanknoteAmount, Integer> findSmallestFirstCombination(
-            Map<BanknoteAmount, Integer> storage,
-            int amount
-    ) {
+            Map<BanknoteAmount, Integer> storage, int amount) {
         EnumMap<BanknoteAmount, Integer> dispensed = new EnumMap<>(BanknoteAmount.class);
 
         BanknoteAmount[] denoms = storage.keySet().toArray(new BanknoteAmount[0]);
@@ -24,11 +21,12 @@ public class BanknoteCombinationFinderService {
         return dispensed;
     }
 
-    private boolean findCombination(BanknoteAmount[] denoms,
-                                    int index,
-                                    int remaining,
-                                    Map<BanknoteAmount, Integer> storage,
-                                    EnumMap<BanknoteAmount, Integer> dispensed) {
+    private boolean findCombination(
+            BanknoteAmount[] denoms,
+            int index,
+            int remaining,
+            Map<BanknoteAmount, Integer> storage,
+            EnumMap<BanknoteAmount, Integer> dispensed) {
 
         if (remaining == 0) return true;
         if (index == denoms.length) return false;
@@ -44,8 +42,7 @@ public class BanknoteCombinationFinderService {
                 dispensed.merge(denom, use, Integer::sum);
             }
 
-            if (findCombination(denoms, index + 1,
-                    remaining - use * value, storage, dispensed)) {
+            if (findCombination(denoms, index + 1, remaining - use * value, storage, dispensed)) {
                 return true;
             }
 

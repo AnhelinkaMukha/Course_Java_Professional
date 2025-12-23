@@ -8,7 +8,7 @@ public class Banknote {
     @Setter
     private BanknoteAmount banknoteAmount;
 
-    Banknote(BanknoteAmount banknoteAmount){
+    Banknote(BanknoteAmount banknoteAmount) {
         this.banknoteAmount = banknoteAmount;
     }
 }

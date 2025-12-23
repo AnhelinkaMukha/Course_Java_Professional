@@ -14,8 +14,7 @@ public enum BanknoteAmount {
 
     private final int value;
 
-    BanknoteAmount(int value){
+    BanknoteAmount(int value) {
         this.value = value;
     }
-
 }
