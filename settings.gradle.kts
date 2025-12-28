@@ -16,6 +16,10 @@ include("L12-solid")
 include("L13-creationalPatterns")
 include("L14-behavioralPatterns")
 include("L15-structuralPatterns")
+include("L16-io:homework")
+include("L16-io:demo")
+include("L17-nio")
+include("L18-jdbc")
 
 
 pluginManagement {
