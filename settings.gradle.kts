@@ -20,6 +20,10 @@ include("L16-io:homework")
 include("L16-io:demo")
 include("L17-nio")
 include("L18-jdbc")
+include("L19-rdbms")
+include("L20-hibernate")
+include("L21-jpql")
+include("L22-cache")
 
 
 pluginManagement {
