@@ -10,42 +10,60 @@ import java.util.List;
 public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
 
     private final Class<T> clazz;
+    private final String name;
+    private final Constructor<T> constructor;
+    private final Field idField;
+    private final List<Field> fieldsWithoutId;
+    private final List<Field> allFields;
 
     public EntityClassMetaDataImpl(Class<T> clazz) {
         this.clazz = clazz;
+        this.name = clazz.getSimpleName();
+
+        try {
+            this.constructor = clazz.getConstructor();
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+
+        idField = Arrays.stream(getFields())
+                .filter(f -> f.isAnnotationPresent(Id.class))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("No @Id field in " + clazz.getName()));
+
+        fieldsWithoutId = Arrays.stream(getFields())
+                .filter(field -> !field.equals(this.getIdField()))
+                .toList();
+
+        allFields = List.of(getFields());
     }
 
     @Override
     public String getName() {
-        return clazz.getSimpleName();
+        return name;
     }
 
     @Override
     public Constructor<T> getConstructor() {
-        try {
-            return clazz.getConstructor();
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
+        return this.constructor;
     }
 
     @Override
     public Field getIdField() {
-        return Arrays.stream(clazz.getDeclaredFields())
-                .filter(f -> f.isAnnotationPresent(Id.class))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("No @Id field in " + clazz.getName()));
+        return idField;
     }
 
     @Override
     public List<Field> getAllFields() {
-        return List.of(clazz.getDeclaredFields());
+        return allFields;
     }
 
     @Override
     public List<Field> getFieldsWithoutId() {
-        return Arrays.stream(clazz.getDeclaredFields())
-                .filter(field -> !field.equals(this.getIdField()))
-                .toList();
+        return fieldsWithoutId;
+    }
+
+    private Field[] getFields(){
+        return clazz.getDeclaredFields();
     }
 }
