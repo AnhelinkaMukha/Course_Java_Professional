@@ -20,5 +20,7 @@ public class HomeWork {
           по аналогии с Demo.class
           из элеменов "to do" создать new ComplexProcessor и обработать сообщение
         */
+
+        //I made also test for this one to check
     }
 }
