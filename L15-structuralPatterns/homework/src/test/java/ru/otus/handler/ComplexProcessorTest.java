@@ -1,17 +1,5 @@
 package ru.otus.handler;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.otus.listener.Listener;
@@ -19,6 +7,15 @@ import ru.otus.model.Message;
 import ru.otus.processor.Processor;
 import ru.otus.processor.ProcessorChangeF11AndF12Values;
 import ru.otus.processor.ProcessorExceptionOnEvenSecond;
+import ru.otus.processor.TimeProvider;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class ComplexProcessorTest {
 
@@ -36,7 +33,8 @@ class ComplexProcessorTest {
 
         var processors = List.of(processor1, processor2);
 
-        var complexProcessor = new ComplexProcessor(processors, (ex) -> {});
+        var complexProcessor = new ComplexProcessor(processors, (ex) -> {
+        });
 
         // when
         var result = complexProcessor.handle(message);
@@ -81,7 +79,8 @@ class ComplexProcessorTest {
 
         var listener = mock(Listener.class);
 
-        var complexProcessor = new ComplexProcessor(new ArrayList<>(), (ex) -> {});
+        var complexProcessor = new ComplexProcessor(new ArrayList<>(), (ex) -> {
+        });
 
         complexProcessor.addListener(listener);
 
@@ -102,18 +101,19 @@ class ComplexProcessorTest {
         var message = new Message.Builder(1L).field11(f11).field12(f12).build();
 
         Processor processor = new ProcessorChangeF11AndF12Values();
-       Message result = processor.process(message);
+        Message result = processor.process(message);
 
-       assertEquals(result.getField11(), f12);
-       assertEquals(result.getField12(), f11);
+        assertEquals(result.getField11(), f12);
+        assertEquals(result.getField12(), f11);
     }
 
     @Test
     void testProcessorShouldNotThrowExceptionOnOddSec() {
         Message message = new Message.Builder(1L).field11("f11").field12("f12").field1("F1").build();
-
+        TimeProvider timeProvider = () -> LocalDateTime.of(
+                2025, 1, 1, 1, 1, 11);
         Processor processor = new ProcessorExceptionOnEvenSecond(
-                () -> LocalDateTime.of(2025, 1, 1, 1, 1, 11)
+                timeProvider
         );
 
         assertDoesNotThrow(

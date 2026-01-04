@@ -7,15 +7,15 @@ import java.util.function.Supplier;
 
 public class ProcessorExceptionOnEvenSecond implements Processor{
 
-    private final Supplier<LocalDateTime> timeProvider;
+    private final TimeProvider timeProvider;
 
-    public ProcessorExceptionOnEvenSecond(Supplier<LocalDateTime> timeProvider) {
+    public ProcessorExceptionOnEvenSecond(TimeProvider timeProvider) {
         this.timeProvider = timeProvider;
     }
 
     @Override
     public Message process(Message message) {
-        int second = timeProvider.get().getSecond();
+        int second = timeProvider.now().getSecond();
         if (second % 2 == 0) {
             throw new RuntimeException("Even second exception: " + second);
         }
