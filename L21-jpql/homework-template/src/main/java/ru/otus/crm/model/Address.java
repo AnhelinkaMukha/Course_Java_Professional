@@ -1,7 +1,33 @@
 package ru.otus.crm.model;
 
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@Entity
+@Table(name = "address")
 public class Address {
+    @Id
+    @SequenceGenerator(name = "address_gen", sequenceName = "address_SEQ", initialValue = 1, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "address_gen")
+    @Column(name = "id")
+    private Long id;
+
+    @Column(name = "street")
+    private String street;
+
+    @OneToOne
+    @JoinColumn(name = "client_id", nullable = false, unique = true)
+    private Client client;
+
     public Address(Long id, String street) {
-        throw new UnsupportedOperationException();
+        this.id = id;
+        this.street = street;
     }
+
+
 }
